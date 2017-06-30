@@ -177,6 +177,8 @@ namespace cave {
             void add(std::pair<std::string, T> cron_pair);
             void add(std::string cron_expr, T value);
             void add(cron_cmpts cmpts, T value);
+			void remove(std::string cron_expr);
+			void remove(cron_cmpts cmpts);
             ~cron_map();
             inline T operator()(ptime time) {
                 auto date = time.date();
@@ -333,6 +335,19 @@ namespace cave {
             add(cmpts, value);
         }
         ;
+		template<typename T>
+		inline void cron_map<T>::remove(std::string cron_expr)
+		{
+			add(cron_expr, default_value);
+		}
+		;
+		template<typename T>
+		inline void cron_map<T>::remove(cron_cmpts cmpts)
+		{
+			
+			add(cmpts, default_value);
+		}
+		;
         template<typename T>
         cron_map<T>::~cron_map()
         {
