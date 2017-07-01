@@ -281,10 +281,31 @@ namespace cave {
 
             add(cmpts, default_value);
         }
+        template<typename T>
+        inline T cron_map<T>::operator()(ptime time)
+        {
+            auto date = time.date();
+            auto time_of_day = time.time_of_day();
+
+
+            return wm(date.day_of_week().as_number() + 1)(date.month())(date.day())(time_of_day.hours())(time_of_day.minutes())(time_of_day.seconds());
+
+        }
         ;
         template<typename T>
         cron_map<T>::~cron_map()
         {
         };
-    } // namespace cron_map
+        template<typename T>
+        std::ostream & operator<<(std::ostream & os, cron_map<T> const & cm)
+        {
+            os << cm.wm;
+            return os;
+        }
+        template<typename T>
+        bool operator==(cron_map<T> const & cm_left, cron_map<T> const & cm_right)
+        {
+            return cm_left.wm == cm_right.wm;
+        }
+} // namespace cron_map
 } // namespace cave
