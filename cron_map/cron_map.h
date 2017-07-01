@@ -19,6 +19,10 @@ using namespace boost::icl;
 using namespace boost::posix_time;
 namespace cave {
     namespace cron_map {
+             static inline std::string format_cron_expr(const std::string cron_expr) {
+            std::string new_cron_expr(boost::algorithm::to_upper_copy(cron_expr));
+            return new_cron_expr;
+        }
         struct cron_cmpts {
             boost::icl::interval_set<int> dow;
             boost::icl::interval_set<int> month;
@@ -50,7 +54,10 @@ namespace cave {
             void remove(cron_cmpts cmpts);
 
             inline T operator()(ptime time);
-            friend std::ostream  & operator<<(std::ostream & os, cron_map<T> const & cm);
+            friend std::ostream  & operator<<(std::ostream & os, cron_map<T> const & cm) {
+                os << cm.wm;
+                return os;
+            };
             friend  bool __cdecl operator==(class cron_map<T> const & cm_left, class cron_map<T> const & cm_right);
 
             cron_map<T> & operator+=(const cron_map<T>& classObj);
@@ -164,6 +171,7 @@ namespace cave {
         };
 
         static cron_cmpts  convert_to_cron_cmpts(std::string cron_expr) {
+ 
             cron_cmpts cmpts;
             std::stringstream cron_expr_stringstream;
             cron_expr_stringstream << "^("
@@ -178,8 +186,8 @@ namespace cave {
             if (!std::regex_match(cron_expr, std::regex(cron_expr_string))) {
                 throw std::invalid_argument("invalid cron expression");
             }
-            std::string new_cron_expr(cron_expr);
-            new_cron_expr = convert_month_dow_to_int(new_cron_expr);
+            std::string new_cron_expr;
+            new_cron_expr = convert_month_dow_to_int(format_cron_expr(cron_expr));
             std::istringstream ss(new_cron_expr);
             std::string token;
             std::vector<std::string> str_cmpts;
@@ -197,10 +205,7 @@ namespace cave {
 
         };
 
-        static inline std::string format_cron_expr(const std::string cron_expr) {
-            std::string new_cron_expr(boost::algorithm::to_upper_copy(cron_expr));
-            return new_cron_expr;
-        }
+   
 
         template<typename T>
         cron_map<T>::cron_map(T default_val) :default_value{ default_val }
@@ -359,12 +364,7 @@ namespace cave {
         cron_map<T>::~cron_map()
         {
         };
-        template<typename T>
-        std::ostream & operator<<(std::ostream & os, cron_map<T> const & cm)
-        {
-            os << cm.wm;
-            return os;
-        }
+    
         template<typename T>
         bool operator==(cron_map<T> const & cm_left, cron_map<T> const & cm_right)
         {
