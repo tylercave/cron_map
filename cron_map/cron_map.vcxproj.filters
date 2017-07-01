@@ -22,9 +22,4 @@
   <ItemGroup>
     <None Include="..\README.md" />
   </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="cron_map.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
 </Project>
