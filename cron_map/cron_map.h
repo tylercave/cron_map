@@ -19,7 +19,7 @@ using namespace boost::icl;
 using namespace boost::posix_time;
 namespace cave {
     namespace cron_map {
-        static inline std::string format_cron_expr(const std::string cron_expr) {
+             static inline std::string format_cron_expr(const std::string cron_expr) {
             std::string new_cron_expr(boost::algorithm::to_upper_copy(cron_expr));
             return new_cron_expr;
         }
@@ -171,7 +171,7 @@ namespace cave {
         };
 
         static cron_cmpts  convert_to_cron_cmpts(std::string cron_expr) {
-
+ 
             cron_cmpts cmpts;
             std::stringstream cron_expr_stringstream;
             cron_expr_stringstream << "^("
@@ -205,7 +205,7 @@ namespace cave {
 
         };
 
-
+   
 
         template<typename T>
         cron_map<T>::cron_map(T default_val) :default_value{ default_val }
@@ -364,7 +364,7 @@ namespace cave {
         cron_map<T>::~cron_map()
         {
         };
-
+    
         template<typename T>
         bool operator==(cron_map<T> const & cm_left, cron_map<T> const & cm_right)
         {
