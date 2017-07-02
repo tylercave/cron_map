@@ -1,3 +1,24 @@
+//MIT License
+//
+//Copyright(c) 2017 Tyler Cave
+//
+//Permission is hereby granted, free of charge, to any person obtaining a copy
+//of this software and associated documentation files(the "Software"), to deal
+//in the Software without restriction, including without limitation the rights
+//to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//copies of the Software, and to permit persons to whom the Software is
+//furnished to do so, subject to the following conditions :
+//
+//The above copyright notice and this permission notice shall be included in all
+//copies or substantial portions of the Software.
+//
+//THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
+//AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+//SOFTWARE.
 #pragma once
 
 
@@ -19,10 +40,12 @@ using namespace boost::icl;
 using namespace boost::posix_time;
 namespace cave {
     namespace cron_map {
-             static inline std::string format_cron_expr(const std::string cron_expr) {
+        
+        static inline std::string format_cron_expr(const std::string cron_expr) {
             std::string new_cron_expr(boost::algorithm::to_upper_copy(cron_expr));
             return new_cron_expr;
         }
+
         struct cron_cmpts {
             boost::icl::interval_set<int> dow;
             boost::icl::interval_set<int> month;
@@ -171,7 +194,7 @@ namespace cave {
         };
 
         static cron_cmpts  convert_to_cron_cmpts(std::string cron_expr) {
- 
+
             cron_cmpts cmpts;
             std::stringstream cron_expr_stringstream;
             cron_expr_stringstream << "^("
@@ -205,7 +228,7 @@ namespace cave {
 
         };
 
-   
+
 
         template<typename T>
         cron_map<T>::cron_map(T default_val) :default_value{ default_val }
@@ -364,7 +387,7 @@ namespace cave {
         cron_map<T>::~cron_map()
         {
         };
-    
+
         template<typename T>
         bool operator==(cron_map<T> const & cm_left, cron_map<T> const & cm_right)
         {
