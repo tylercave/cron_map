@@ -39,6 +39,8 @@
 using namespace boost::icl;
 using namespace boost::posix_time;
 namespace cave {
+
+    // 
     namespace cron_map {
         
         static inline std::string format_cron_expr(const std::string cron_expr) {
@@ -78,7 +80,7 @@ namespace cave {
 
             inline T operator()(ptime time);
             friend std::ostream  & operator<<(std::ostream & os, cron_map<T> const & cm) {
-                os << cm.wm;
+                os << cm.root;
                 return os;
             };
             friend  bool __cdecl operator==(class cron_map<T> const & cm_left, class cron_map<T> const & cm_right);
@@ -88,12 +90,8 @@ namespace cave {
         private:
             T default_value{};
 
-            seconds_map sm;
-            minutes_map mm;
-            hours_map hm;
-            dom_map dm;
-            month_map mn;
-            dow_map wm;
+    
+            dow_map root;
 
             void init();
         };
@@ -241,7 +239,7 @@ namespace cave {
         {
             // TODO: insert return statement here
             // TODO: insert return statement here
-            this->wm += classObj.wm;
+            this->root += classObj.root;
             return *this;
         }
         template<typename T>
@@ -262,12 +260,17 @@ namespace cave {
         template<typename T>
         inline void cron_map<T>::init()
         {
+            seconds_map sm;
+            minutes_map mm;
+            hours_map hm;
+            dom_map dm;
+            month_map mn;
             sm.add(std::make_pair(seconds_interval, default_value));
             mm.add(std::make_pair(minutes_interval, sm));
             hm.add(std::make_pair(hours_interval, mm));
             dm.add(std::make_pair(dom_interval, hm));
             mn.add(std::make_pair(month_interval, dm));
-            wm.add(std::make_pair(dow_interval, mn));
+            root.add(std::make_pair(dow_interval, mn));
         };
 
         template<typename T>
@@ -279,11 +282,11 @@ namespace cave {
         template<typename T>
         void cron_map<T>::add(cron_cmpts cmpts, T value)
         {
-            auto dow_intersect = wm & cmpts.dow;
+            auto dow_intersect = root & cmpts.dow;
 
-            wm -= dow_intersect;
+            root -= dow_intersect;
 
-            std::transform(dow_intersect.begin(), dow_intersect.end(), boost::icl::adder(wm, wm.end()),
+            std::transform(dow_intersect.begin(), dow_intersect.end(), boost::icl::adder(root, root.end()),
                 [value, cmpts](auto dow_pair) {
                 auto month_intersect = std::get<1>(dow_pair) & cmpts.month;
                 std::get<1>(dow_pair) -= month_intersect;
@@ -379,7 +382,7 @@ namespace cave {
             auto time_of_day = time.time_of_day();
 
 
-            return wm(date.day_of_week().as_number() + 1)(date.month())(date.day())(time_of_day.hours())(time_of_day.minutes())(time_of_day.seconds());
+            return root(date.day_of_week().as_number() + 1)(date.month())(date.day())(time_of_day.hours())(time_of_day.minutes())(time_of_day.seconds());
 
         }
         ;
@@ -391,7 +394,7 @@ namespace cave {
         template<typename T>
         bool operator==(cron_map<T> const & cm_left, cron_map<T> const & cm_right)
         {
-            return cm_left.wm == cm_right.wm;
+            return cm_left.root == cm_right.root;
         }
     } // namespace cron_map
 } // namespace cave
